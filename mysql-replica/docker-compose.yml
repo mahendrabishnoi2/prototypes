@@ -1,0 +1,43 @@
+services:
+  mysql-master:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: master
+      MYSQL_PASSWORD: master
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data-master/var/lib/mysql:/var/lib/mysql
+      - ./data-master/etc/mysql/conf.d:/etc/mysql/conf.d
+      - ./data-master/etc/mysql:/etc/mysql
+      - ./data-master/var/log/mysql:/var/log/mysql
+  mysql-replica-1:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: replica1
+      MYSQL_PASSWORD: replica1
+    volumes:
+      - ./data-replica-1/var/lib/mysql:/var/lib/mysql
+      - ./data-replica-1/etc/mysql/conf.d:/etc/mysql/conf.d
+      - ./data-replica-1/etc/mysql:/etc/mysql
+      - ./data-replica-1/var/log/mysql:/var/log/mysql
+    depends_on:
+      - mysql-master # spawn after mysql-master
+  mysql-replica-2:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: replica2
+      MYSQL_PASSWORD: replica2
+    volumes:
+      - ./data-replica-2/var/lib/mysql:/var/lib/mysql
+      - ./data-replica-2/etc/mysql/conf.d:/etc/mysql/conf.d
+      - ./data-replica-2/etc/mysql:/etc/mysql
+      - ./data-replica-2/var/log/mysql:/var/log/mysql
+    depends_on:
+      - mysql-master # spawn after mysql-master
